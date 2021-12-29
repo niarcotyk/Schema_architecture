@@ -1,0 +1,26 @@
+@startuml
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+' uncomment the following line and comment the first to use locally
+' !include C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Schéma de contexte du système d'ouverture d'une porte
+
+Person(Employee, "Employee", "An employee with a google account and an akeneo.com domain name")
+System_Boundary(Open,"Open Door") {
+System(Browser,"Browser", "Application software for accessing the World Wide Web")
+System(16Souls , "16-souls", "Allows access to and opening of doors")
+System(API,"API Google", "Authorization protocol that allows users to give a site access")
+}
+System_Ext(Raspberry, "Raspberry Pi", "Used to simulate the door switch. Sending a 0 to the relay, it makes the contact otherwise the switch remains open.")
+System_Ext(Material, "Door", "Door controlled by an electro-magnetic lock")
+
+Rel(Employee, Browser, "Is in front of the door and wishes to open it")
+Rel(Employee, 16Souls , "Access the door opener interface")
+Rel(Browser , API, "Allows employee authentication")
+Rel(16Souls, Raspberry , "Send a code")
+Rel(Raspberry , Material, "Send a signal to unlock the lock")
+
+@enduml
