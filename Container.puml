@@ -1,0 +1,36 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+' uncomment the following line and comment the first to use locally
+' !include C4_Container.puml
+' LAYOUT_TOP_DOWN()
+' LAYOUT_AS_SKETCH()
+
+LAYOUT_WITH_LEGEND()
+
+title Container diagram for Application 16-souls
+
+Container_Boundary(16Souls, "16-souls"){
+Container(DoorLogs, "DoorLogs Controller", "Call the select query, send it to the database and get the data")
+Container(ChooseDoor, "ChooseDoor Controller",  "Check the GPIO pin number sent, create a log and send the signal to the Raspberry Pi")
+Container(Login, "Login Controller",  "Checks authentication via Google API and handles logout")
+Container(Error, "Error Controller", "Following verification, redirects if necessary to error pages")
+Container(DoorAccess, "DoorAccess Repository", "Allows connection and creation of data insertion and selection queries")
+Container(Log, "Log Service", "Creates an instance of the DoorAccess object which performs the checks and sends the insert request to the database")
+Container(DoorOpener, "DoorOpener Service", "Sends the code to the Raspberry Pi which controls the switch")
+}
+
+System_Ext(BDD, "DataBase", "Stores access logs")
+System_Ext(Raspberry, "Raspberry Pi", "Used to simulate the door switch. Sending a 0 to the relay, it makes the contact otherwise the switch remains open.")
+System_Ext(Material, "Door", "Door controlled by an electro-magnetic lock")
+Rel(Login, ChooseDoor, "Send")
+Rel(ChooseDoor,Error,"Send")
+Rel(DoorLogs, DoorAccess, "Use")
+Rel(ChooseDoor, Log, "Use")
+Rel(ChooseDoor, DoorAccess, "Use")
+Rel(ChooseDoor, DoorOpener, "Use")
+Rel(Log,DoorAccess, "Use")
+Rel_Neighbor(DoorOpener, Raspberry, "Send")
+Rel(Raspberry, Material, "Send")
+Rel(DoorAccess,BDD, "Use")
+
+@enduml
